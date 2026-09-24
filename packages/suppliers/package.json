@@ -1,0 +1,26 @@
+{
+  "name": "@fetchfield/suppliers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Supplier adapters (AliExpress DS, CSV), pricing rules, sync and order-forwarding logic. Server-only.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./pricing": "./src/pricing/rules.ts",
+    "./delivery": "./src/delivery/estimate.ts",
+    "./public": "./src/public/projection.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}

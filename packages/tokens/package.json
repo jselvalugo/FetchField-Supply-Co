@@ -1,0 +1,20 @@
+{
+  "name": "@fetchfield/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/tokens.ts",
+    "./tokens.css": "./tokens.css"
+  },
+  "scripts": {
+    "generate": "node --experimental-strip-types scripts/generate-css.ts",
+    "typecheck": "tsc -p .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  }
+}
