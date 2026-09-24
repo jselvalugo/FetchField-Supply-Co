@@ -1,6 +1,8 @@
 export const site = {
   name: "FetchField Supply Co.",
-  url: process.env.SITE_URL ?? "http://localhost:3000",
+  // Netlify sets URL to the primary site URL.
+  url: process.env.SITE_URL ?? process.env.URL ?? "http://localhost:3000",
+  noindex: process.env.SITE_NOINDEX === "1",
   /**
    * Shown in a slim bar while the catalog is sample data. Set to false once
    * specs and prices are manufacturer-confirmed.

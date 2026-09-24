@@ -1,0 +1,11 @@
+# Netlify: Next.js storefront from the npm-workspaces monorepo.
+[build]
+  base = "apps/web"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # While the catalog is sample data, keep the site out of search engines.
+  SITE_NOINDEX = "1"
