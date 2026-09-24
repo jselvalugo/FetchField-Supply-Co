@@ -1,13 +1,19 @@
 {
   "name": "fetchfield",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "npm run dev -w @fetchfield/web",
     "build": "npm run build -w @fetchfield/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "e2e": "npm run e2e -w @fetchfield/web"
   },
-  "engines": { "node": ">=20.9" }
+  "engines": {
+    "node": ">=20.9"
+  }
 }

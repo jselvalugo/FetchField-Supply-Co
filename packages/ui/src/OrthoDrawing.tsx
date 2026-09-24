@@ -35,7 +35,8 @@ const PAD_L = 64;
 const PAD_R = 28;
 const PAD_T = 36;
 const GAP = 64;
-const MAX_H = 250;
+const GAP_CALLOUTS = 96;
+const MAX_H = 290;
 
 const fmtIn = (v: number) => {
   const whole = Math.floor(v + 1e-9);
@@ -51,17 +52,25 @@ export function OrthoDrawing({ drawing, className }: { drawing: Drawing; classNa
   const views = drawing.views;
   const sumW = views.reduce((s, v) => s + v.width, 0);
   const maxH = Math.max(...views.map((v) => v.height));
-  const availW = W - PAD_L - PAD_R - GAP * (views.length - 1);
+  // Gap after each view: wider when that view has callout balloons in it.
+  const gaps = views.slice(0, -1).map((v) => (v.callouts?.length ? GAP_CALLOUTS : GAP));
+  const gapSum = gaps.reduce((a, b) => a + b, 0);
+  const availW = W - PAD_L - PAD_R - gapSum;
   const k = Math.min(availW / sumW, MAX_H / maxH);
   const ground = PAD_T + maxH * k;
-  const totalViewsW = sumW * k + GAP * (views.length - 1);
-  let cursor = PAD_L + (availW + GAP * (views.length - 1) - totalViewsW) / 2;
+  const totalViewsW = sumW * k + gapSum;
+  let cursor = PAD_L + (availW + gapSum - totalViewsW) / 2;
   const H = ground + 128;
 
-  const placed = views.map((v) => {
+  // Height is dimensioned once; later views repeat it only when their height differs.
+  let lastHeight: number | null = null;
+  const placed = views.map((v, i) => {
     const x0 = cursor;
-    cursor += v.width * k + GAP;
-    return { v, x0 };
+    cursor += v.width * k + (gaps[i] ?? 0);
+    const plan = v.name === "Top" || v.name === "Plan";
+    const showHeight = !v.noHeightDim && !plan && v.height !== lastHeight;
+    if (!plan) lastHeight = v.height;
+    return { v, x0, showHeight };
   });
 
   const summary = views
@@ -84,7 +93,7 @@ export function OrthoDrawing({ drawing, className }: { drawing: Drawing; classNa
         {/* sheet border */}
         <rect x="6" y="6" width={W - 12} height={H - 12} className="ff-dw-sheet" />
 
-        {placed.map(({ v, x0 }) => {
+        {placed.map(({ v, x0, showHeight }) => {
           const X = (x: number) => x0 + x * k;
           const Y = (y: number) => ground - y * k;
           const plan = v.name === "Top" || v.name === "Plan";
@@ -128,7 +137,7 @@ export function OrthoDrawing({ drawing, className }: { drawing: Drawing; classNa
               </text>
 
               {/* height dimension, left of view */}
-              {!v.noHeightDim && (
+              {showHeight && (
                 <g>
                   <line x1={x0 - 30} y1={ground} x2={x0 - 30} y2={Y(v.height)} className="ff-dw-dim" markerStart={arrow} markerEnd={arrow} />
                   <line x1={x0 - 36} y1={Y(v.height)} x2={x0 - 4} y2={Y(v.height)} className="ff-dw-ext" />

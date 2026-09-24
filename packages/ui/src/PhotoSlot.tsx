@@ -22,9 +22,7 @@ export function PhotoSlot({
 }) {
   return (
     <div className={cx("ff-photo-slot", tone === "dark" && "ff-photo-slot--dark", className)} style={{ aspectRatio: ratio }} role="img" aria-label={`Photo coming soon: ${brief}`}>
-      <svg className="ff-photo-slot__frame" aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M0 12V0h12M88 0h12v12M100 88v12H88M12 100H0V88" vectorEffect="non-scaling-stroke" />
-      </svg>
+      <span className="ff-photo-slot__frame" aria-hidden />
       <div className="ff-photo-slot__body">
         <span className="ff-photo-slot__tag">{shotId ? `Shot ${shotId}` : "Photo to come"}</span>
         <p className="ff-photo-slot__brief">{brief}</p>

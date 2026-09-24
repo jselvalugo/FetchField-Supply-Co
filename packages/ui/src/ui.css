@@ -160,25 +160,43 @@
     var(--field-deep);
   color: color-mix(in oklab, var(--chalk) 78%, transparent);
 }
-.ff-photo-slot__frame { position: absolute; inset: 14px; width: calc(100% - 28px); height: calc(100% - 28px); fill: none; stroke: currentColor; stroke-width: 1.5; }
+/* Viewfinder corners, fixed size at any aspect ratio */
+.ff-photo-slot__frame {
+  position: absolute; inset: 14px; pointer-events: none;
+  --l: 22px; --t: 1.5px;
+  background:
+    linear-gradient(currentColor 0 0) top left / var(--l) var(--t),
+    linear-gradient(currentColor 0 0) top left / var(--t) var(--l),
+    linear-gradient(currentColor 0 0) top right / var(--l) var(--t),
+    linear-gradient(currentColor 0 0) top right / var(--t) var(--l),
+    linear-gradient(currentColor 0 0) bottom left / var(--l) var(--t),
+    linear-gradient(currentColor 0 0) bottom left / var(--t) var(--l),
+    linear-gradient(currentColor 0 0) bottom right / var(--l) var(--t),
+    linear-gradient(currentColor 0 0) bottom right / var(--t) var(--l);
+  background-repeat: no-repeat;
+  opacity: .8;
+}
 .ff-photo-slot__body { position: relative; padding: clamp(1.25rem, 4%, 2.25rem); max-width: 36rem; }
 .ff-photo-slot__tag { display: inline-block; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; border: 1px solid currentColor; padding: .2rem .45rem; margin-bottom: .6rem; }
 .ff-photo-slot__brief { margin: 0; font-size: .875rem; line-height: 1.5; }
 
 /* ---------- Field note ---------- */
+/* A note pencilled into a field guide: notebook margin rule, ruled lines under the text. */
 .ff-note {
   position: relative; max-width: 30rem;
-  padding: 1.1rem 1.25rem 1rem 1.6rem;
+  padding: 1.1rem 1.25rem 1rem 1.75rem;
   background: var(--c-surface);
-  border-left: 1px dashed var(--c-line-strong);
-  background-image: repeating-linear-gradient(transparent 0 1.55rem, color-mix(in oklab, var(--c-info) 45%, transparent) 1.55rem calc(1.55rem + 1px));
-  background-position: 0 .95rem;
+  border: 1px solid var(--c-line);
 }
-.ff-note::before { content: ""; position: absolute; left: .65rem; top: 0; bottom: 0; width: 1px; background: color-mix(in oklab, var(--c-accent) 55%, transparent); }
-.ff-note__label { margin: 0 0 .35rem; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--c-brand); }
-.ff-note__body { font-style: italic; font-size: 1.02rem; line-height: 1.55rem; }
-.ff-note__body p { margin: 0 0 .5rem; }
-.ff-note__from { margin: .4rem 0 0; font-size: .8rem; color: var(--c-muted); }
+.ff-note::before { content: ""; position: absolute; left: .85rem; top: 0; bottom: 0; width: 1.5px; background: var(--c-info); }
+.ff-note__label { margin: 0 0 .4rem; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--c-brand); }
+.ff-note__body {
+  font-style: italic; font-size: 1.02rem; line-height: 1.75rem;
+  background-image: linear-gradient(to bottom, transparent calc(1.75rem - 1px), color-mix(in oklab, var(--c-info) 55%, transparent) calc(1.75rem - 1px));
+  background-size: 100% 1.75rem;
+}
+.ff-note__body p { margin: 0; }
+.ff-note__from { margin: .5rem 0 0; font-size: .8rem; color: var(--c-muted); }
 
 /* ---------- States ---------- */
 .ff-empty { display: grid; justify-items: start; gap: .6rem; padding: 2.5rem 0; max-width: 34rem; }

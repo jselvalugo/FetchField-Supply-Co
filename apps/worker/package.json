@@ -1,0 +1,28 @@
+{
+  "name": "@fetchfield/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Background jobs: supplier stock/price sync, order forwarding, tracking polls, FTC delay checks.",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "migrate": "tsx src/db/migrate.ts",
+    "connect-aliexpress": "tsx src/connect-aliexpress.ts",
+    "typecheck": "tsc -p .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "@fetchfield/suppliers": "*",
+    "bullmq": "^6.3.8",
+    "ioredis": "^6.0.0",
+    "pg": "^8.23.0",
+    "zod": "^4.6.5"
+  }
+}

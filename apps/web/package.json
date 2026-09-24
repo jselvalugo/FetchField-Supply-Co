@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "e2e": "playwright test"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.20.4",
     "@types/react": "^19.3.0",
@@ -20,12 +22,16 @@
     "vitest": "^5.0.1"
   },
   "dependencies": {
+    "@fetchfield/suppliers": "*",
+    "@fetchfield/tokens": "*",
+    "@fetchfield/ui": "*",
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/public-sans": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "next": "^16.3.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
     "zod": "^4.6.5"
   }
 }
