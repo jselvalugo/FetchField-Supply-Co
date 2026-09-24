@@ -4,6 +4,7 @@ import { z } from "zod";
 import { priceShopVariant } from "@/lib/catalog";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { site } from "@/lib/site";
+import { newOrderId } from "@/lib/server/data";
 
 const Input = z.object({
   email: z.string().trim().email("Enter a valid email address").max(200),
@@ -40,7 +41,7 @@ export async function startCheckout(_prev: CheckoutState, formData: FormData): P
   const problems: Array<{ sku: string; reason: string }> = [];
   const items = [];
   for (const l of parsed.data.lines) {
-    const hit = priceShopVariant(l.sku);
+    const hit = await priceShopVariant(l.sku);
     if (!hit) problems.push({ sku: l.sku, reason: "no longer sold" });
     else if (!hit.available) problems.push({ sku: l.sku, reason: "sold out" });
     else items.push({ name: hit.product.name, sku: l.sku, unit: hit.priceCents, qty: l.qty });
@@ -55,10 +56,12 @@ export async function startCheckout(_prev: CheckoutState, formData: FormData): P
     return { status: "error", message: "Payments aren't switched on in this preview, so no order was placed. Your cart is saved." };
   }
 
+  const orderId = newOrderId();
   const body = new URLSearchParams({
     mode: "payment",
+    "metadata[order]": orderId,
     customer_email: parsed.data.email,
-    success_url: `${site.url}/shop/track?placed=1&session={CHECKOUT_SESSION_ID}`,
+    success_url: `${site.url}/shop/track?placed=1&order=${orderId}`,
     cancel_url: `${site.url}/shop/cart`,
     "shipping_address_collection[allowed_countries][0]": "US",
     "phone_number_collection[enabled]": "true",

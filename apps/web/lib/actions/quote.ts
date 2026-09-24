@@ -6,6 +6,7 @@ import { tierFor } from "@fetchfield/ui";
 import { findProProduct } from "@/lib/catalog";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { sendEmail } from "@/lib/server/email";
+import { saveQuote } from "@/lib/server/data";
 import { site } from "@/lib/site";
 
 const Line = z.object({
@@ -72,7 +73,7 @@ export async function submitQuote(_prev: QuoteState, formData: FormData): Promis
   // Re-price from the catalog. Anything the browser sent besides slug/qty/note is ignored.
   const priced = [];
   for (const l of q.lines) {
-    const p = findProProduct(l.slug);
+    const p = await findProProduct(l.slug);
     if (!p) return { status: "error", message: "One item in your list is no longer available. Remove it and try again.", fieldErrors: {} };
     const unit = p.pricing.kind === "tiers" ? tierFor(p.pricing.tiers, l.qty).priceCents : null;
     priced.push({ name: p.name, model: p.model, qty: l.qty, unit: p.pricing.kind === "tiers" ? p.pricing.unit : "site", unitCents: unit, lineCents: unit === null ? null : unit * l.qty, note: l.note });
@@ -81,8 +82,25 @@ export async function submitQuote(_prev: QuoteState, formData: FormData): Promis
   const ref = `FFQ-${new Date().toISOString().slice(2, 10).replace(/-/g, "")}-${randomBytes(3).toString("hex").toUpperCase()}`;
   const expires = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
 
-  // TODO(backend): persist to the quotes module (Medusa) so admins can review. Until then the
-  // team inbox copy below is the record of the request.
+  const now = new Date().toISOString();
+  await saveQuote({
+    ref,
+    createdAt: now,
+    expiresAt: expires,
+    status: "new",
+    org: { name: q.orgName, type: ORG_LABEL[q.orgType] },
+    buyer: { name: q.buyerName, role: q.buyerRole, email: q.email, phone: q.phone },
+    zip: q.zip,
+    neededBy: q.neededBy,
+    install: q.install,
+    taxExempt: q.taxExempt,
+    bidNumber: q.bidNumber,
+    notes: q.notes,
+    lines: priced.map((l, i) => ({ ...l, slug: q.lines[i]!.slug })),
+    subtotalCents,
+    internalNote: "",
+    history: [{ at: now, event: "Submitted" }],
+  });
   const summary = [
     `Reference: ${ref}`,
     `Organization: ${q.orgName} (${ORG_LABEL[q.orgType]})`,

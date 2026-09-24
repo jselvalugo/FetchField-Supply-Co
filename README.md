@@ -22,6 +22,14 @@ npm run build && npm run e2e -w @fetchfield/web   # e2e + accessibility (Playwri
 ```
 
 Copy `apps/web/.env.example` to `apps/web/.env.local`. Without Stripe keys, checkout says payments are off and takes no order.
-Set `ADMIN_USER` and `ADMIN_PASSWORD` (12+ characters) to open `/admin/suppliers`.
+
+## Launch mode and admin
+
+- `COMING_SOON=1`: every public page shows the Coming Soon page with a launch email list.
+  The team opens the full site at `/preview` with `PREVIEW_PASSWORD`.
+- `/admin` (password: `ADMIN_PASSWORD`): dashboard, launch-list signups with CSV export,
+  quote requests with status and notes, orders recorded from Stripe with fulfilment and tracking,
+  product editing (price, visibility, stock, tiers, lead time), supplier queue, settings and an activity log.
+- Data lives in Netlify Blobs on Netlify and in `apps/web/.data/` locally.
 
 The supplier connection and how to run it safely: **[docs/supplier-integration.md](docs/supplier-integration.md)**.

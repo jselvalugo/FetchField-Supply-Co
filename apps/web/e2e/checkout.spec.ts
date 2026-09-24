@@ -40,7 +40,8 @@ test("customer pages never mention the supplier", async ({ page }) => {
   }
 });
 
-test("admin is closed without credentials", async ({ request }) => {
-  const res = await request.get("/admin/suppliers");
-  expect(res.status()).toBe(401);
+test("admin sends visitors to the login page", async ({ request }) => {
+  const res = await request.get("/admin/suppliers", { maxRedirects: 0 });
+  expect(res.status()).toBe(303);
+  expect(res.headers()["location"]).toContain("/admin/login");
 });

@@ -21,3 +21,11 @@ export async function rateLimit(bucket: string, limit: number, windowMs: number)
   cur.n += 1;
   return cur.n <= limit;
 }
+
+/** True when a bucket is already over its limit, without counting this request. */
+export async function isLimited(bucket: string, limit: number): Promise<boolean> {
+  const h = await headers();
+  const ip = (h.get("x-forwarded-for")?.split(",")[0] ?? h.get("x-real-ip") ?? "local").trim();
+  const cur = hits.get(`${bucket}:${ip}`);
+  return Boolean(cur && cur.reset >= Date.now() && cur.n >= limit);
+}
