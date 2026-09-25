@@ -9,3 +9,9 @@
   NEXT_TELEMETRY_DISABLED = "1"
   # While the catalog is sample data, keep the site out of search engines.
   SITE_NOINDEX = "1"
+
+# Netlify only auto-installs the Next.js adapter for single-app repos. In this
+# monorepo it must be declared, or the build is uploaded as static files and
+# every page 404s.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
